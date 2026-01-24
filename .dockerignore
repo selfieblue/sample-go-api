@@ -1,0 +1,23 @@
+# Binaries
+server
+
+# Git metadata
+.git
+.gitignore
+
+# VCS
+.svn
+.hg
+
+# Editor and OS artifacts
+.DS_Store
+*.swp
+*.swo
+*.tmp
+*~
+node_modules
+vendor
+
+# Build output
+bin
+dist
