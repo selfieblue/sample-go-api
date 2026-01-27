@@ -39,3 +39,4 @@ configEnabled: true
 config:
   ENV: poc
   DB_ENDPOINT: db1.private.example.com
+  REDIS_ENDPOINT: redis1.private.example.com
