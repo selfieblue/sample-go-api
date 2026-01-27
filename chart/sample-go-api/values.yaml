@@ -40,3 +40,34 @@ config:
   ENV: poc
   DB_ENDPOINT: db1.private.example.com
   REDIS_ENDPOINT: redis1.private.example.com
+
+# Istio exposure (Gateway + VirtualService). Disabled by default.
+istio:
+  enabled: true
+
+  gateway:
+    name: ""          # defaults to "<release>-<chart>-gateway" when empty
+    namespace: ""     # optional override; defaults to release namespace
+    selector:
+      istio: aks-istio-ingressgateway-internal
+    servers:
+      - port:
+          number: 80
+          name: http
+          protocol: HTTP
+        hosts:
+          - "sample-go-api.agent-poc.internal"
+
+  virtualService:
+    hosts:
+      - "sample-go-api.agent-poc.internal"
+    gateways: []      # defaults to gateway above
+    http:
+      - match:
+          - uri:
+              prefix: /
+        route:
+          - destination:
+              host: ""  # defaults to service name
+              port:
+                number: 8080

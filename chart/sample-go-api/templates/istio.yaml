@@ -1,0 +1,56 @@
+{{- if .Values.istio.enabled }}
+{{- $fullname := include "sample-go-api.fullname" . -}}
+{{- $gatewayName := default (printf "%s-gateway" $fullname) .Values.istio.gateway.name -}}
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ $gatewayName }}
+  {{- with .Values.istio.gateway.namespace }}
+  namespace: {{ . }}
+  {{- end }}
+  labels:
+    {{- include "sample-go-api.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    {{- toYaml .Values.istio.gateway.selector | nindent 4 }}
+  servers:
+    {{- toYaml .Values.istio.gateway.servers | nindent 4 }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ $fullname }}
+  labels:
+    {{- include "sample-go-api.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  hosts:
+    {{- toYaml .Values.istio.virtualService.hosts | nindent 4 }}
+  gateways:
+    {{- if .Values.istio.virtualService.gateways }}
+    {{- toYaml .Values.istio.virtualService.gateways | nindent 4 }}
+    {{- else }}
+    - {{ $gatewayName }}
+    {{- end }}
+  http:
+    {{- $svcName := $fullname }}
+    {{- $svcPort := .Values.service.port }}
+    {{- range .Values.istio.virtualService.http }}
+    - {{- if .match }}
+      match:
+        {{- toYaml .match | nindent 8 }}
+      {{- end }}
+      route:
+        {{- range .route }}
+        - destination:
+            host: {{ default $svcName .destination.host }}
+            port:
+              number: {{ default $svcPort .destination.port.number }}
+        {{- end }}
+    {{- end }}
+{{- end }}
