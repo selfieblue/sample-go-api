@@ -25,3 +25,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Additional labels applied to chart resources (Deployment, Service, etc.)
+labels: {}
+
+# Additional labels applied specifically to the pod template.
+podLabels: {}
