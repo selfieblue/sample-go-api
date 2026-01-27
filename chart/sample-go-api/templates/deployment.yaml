@@ -26,6 +26,11 @@ spec:
         - name: {{ include "sample-go-api.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.configEnabled }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "sample-go-api.fullname" . }}-config
+          {{- end }}
           env:
             - name: PORT
               value: "{{ .Values.env.port }}"

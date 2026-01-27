@@ -31,3 +31,12 @@ labels: {}
 
 # Additional labels applied specifically to the pod template.
 podLabels: {}
+
+# Toggle creation of a ConfigMap that is injected into the pod as environment variables.
+configEnabled: true
+
+# Key/value pairs written to the ConfigMap when configEnabled is true.
+config:
+  ENV: poc
+  DB_ENDPOINT: db1.private.example.com
+  REDIS_ENDPOINT: redis1.private.example.com
