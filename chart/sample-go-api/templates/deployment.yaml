@@ -4,6 +4,9 @@ metadata:
   name: {{ include "sample-go-api.fullname" . }}
   labels:
     {{- include "sample-go-api.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -15,6 +18,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "sample-go-api.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ include "sample-go-api.name" . }}
