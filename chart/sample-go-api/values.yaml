@@ -68,6 +68,6 @@ istio:
               prefix: /
         route:
           - destination:
-              host: ""  # defaults to service name
+              host: "agentx-kong-kong-proxy"  # defaults to service name
               port:
-                number: 8080
+                number: 80
