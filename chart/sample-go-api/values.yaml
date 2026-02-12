@@ -40,6 +40,7 @@ config:
   ENV: poc
   DB_ENDPOINT: db1.private.example.com
   REDIS_ENDPOINT: redis1.private.example.com
+  REDIS_PASSWORD: sdsddsdsada
 
 # Istio exposure (Gateway + VirtualService). Disabled by default.
 istio:
@@ -51,12 +52,23 @@ istio:
     selector:
       istio: aks-istio-ingressgateway-internal
     servers:
-      - port:
+      - hosts:
+          - "sample-go-api.agent-poc.internal"
+        port:
           number: 80
           name: http
           protocol: HTTP
-        hosts:
-          - "sample-go-api.agent-poc.internal"
+        tls:
+          httpsRedirect: true
+      - hosts:
+        - sample-go-api.agent-poc.internal
+        port:
+          name: https
+          number: 443
+          protocol: HTTPS
+        tls:
+          mode: SIMPLE
+          credentialName: wildcard-agent-poc-tls
 
   virtualService:
     hosts:
